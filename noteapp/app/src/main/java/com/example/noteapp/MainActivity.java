@@ -147,9 +147,12 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     JSONObject j=new JSONObject(result);
                     String result1=j.getString("result");
+                    String id=j.getString("id");
+                    Log.e("id", id );
                     this.tvtest.setText(result1);
                     if (result1.equals("ok")){
                         Intent it=new Intent(MainActivity.this,TrangChu.class);
+                        it.putExtra("userid",id);
                         startActivity(it);
                     }
                 } catch (JSONException e) {
