@@ -95,12 +95,14 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\accountController.cs" />
+    <Compile Include="Controllers\noteController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\account.cs" />
     <Compile Include="Models\dbcontext.cs" />
     <Compile Include="Models\note.cs" />
+    <Compile Include="Models\noteimage.cs" />
     <Compile Include="Models\sysdiagram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

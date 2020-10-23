@@ -5,6 +5,7 @@ namespace noteapi.Models
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
+    using System.Data.Entity;
 
     [Table("account")]
     public partial class account
@@ -15,14 +16,13 @@ namespace noteapi.Models
             notes = new HashSet<note>();
         }
 
-        [StringLength(50)]
-        public string id { get; set; }
+        public int id { get; set; }
 
         [StringLength(50)]
         public string username { get; set; }
 
         [StringLength(50)]
-        public string pasword { get; set; }
+        public string password { get; set; }
 
         [StringLength(50)]
         public string email { get; set; }

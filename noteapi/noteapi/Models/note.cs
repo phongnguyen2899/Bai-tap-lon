@@ -9,14 +9,17 @@ namespace noteapi.Models
     [Table("note")]
     public partial class note
     {
-        [StringLength(50)]
-        public string id { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public note()
+        {
+            noteimages = new HashSet<noteimage>();
+        }
 
-        [Required]
-        [StringLength(50)]
-        public string userid { get; set; }
+        public int id { get; set; }
 
-        [StringLength(50)]
+        public int? userid { get; set; }
+
+        [StringLength(250)]
         public string title { get; set; }
 
         public string content { get; set; }
@@ -24,11 +27,11 @@ namespace noteapi.Models
         [StringLength(250)]
         public string gps { get; set; }
 
-        [StringLength(250)]
-        public string image { get; set; }
-
         public DateTime? createdate { get; set; }
 
         public virtual account account { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<noteimage> noteimages { get; set; }
     }
 }

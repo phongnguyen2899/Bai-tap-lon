@@ -8,25 +8,22 @@ namespace noteapi.Models
     public partial class dbcontext : DbContext
     {
         public dbcontext()
-            : base("name=dbcontext")
+            : base("name=dbcontext1")
         {
+            this.Configuration.ProxyCreationEnabled = false;
         }
 
         public virtual DbSet<account> accounts { get; set; }
         public virtual DbSet<note> notes { get; set; }
+        public virtual DbSet<noteimage> noteimages { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<account>()
                 .HasMany(e => e.notes)
-                .WithRequired(e => e.account)
-                .HasForeignKey(e => e.userid)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<note>()
-                .Property(e => e.gps)
-                .IsUnicode(false);
+                .WithOptional(e => e.account)
+                .HasForeignKey(e => e.userid);
         }
     }
 }

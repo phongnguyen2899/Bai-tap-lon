@@ -1,5 +1,6 @@
 ﻿using noteapi.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -12,10 +13,11 @@ namespace noteapi.Controllers
     public class accountController : ApiController
     {
         dbcontext db = new dbcontext();
-
-        public IHttpActionResult Getall()
+        [HttpGet]
+        public IEnumerable Getall()
         {
-            return Ok(db.accounts.ToList());
+            List<account> l = db.accounts.ToList();
+            return l;
         }
         [HttpGet]
         public IHttpActionResult GetResult(string username,string password)
@@ -35,7 +37,7 @@ namespace noteapi.Controllers
                 else
                 {
                     account x = l.First();
-                    if (x.username == username && x.pasword == password)
+                    if (x.username == username && x.password == password)
                     {
                         return Ok(new { result = "ok",id=""+x.id+"" });
                     }
@@ -48,7 +50,7 @@ namespace noteapi.Controllers
         }
         public IHttpActionResult Postaccount(account user)
         {
-            if (user.username == "" || user.email == "" || user.pasword == "" || user.id == "")
+            if (user.username == "" || user.email == "" || user.password == "" )
             {
                 return Ok(new { result = "err" });
             }
