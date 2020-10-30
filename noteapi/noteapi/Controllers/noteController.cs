@@ -28,7 +28,7 @@ namespace noteapi.Controllers
         }
 
         [HttpPost]
-        public IHttpActionResult Posttextnote(note textnote)
+        public IHttpActionResult Posttextnote([FromBody]note textnote)
         {
             db.notes.Add(textnote);
             db.SaveChanges();

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/so"
+        android:icon="@drawable/so"
+        android:title="" />
+
+    <item
+        android:id="@+id/cham"
+        android:icon="@drawable/cham"
+        android:title="" />
+    <item
+        android:id="@+id/dam"
+        android:icon="@drawable/dam"
+        android:title="" />
+
+    <item
+        android:id="@+id/nghieng"
+        android:icon="@drawable/nghieng"
+        android:title="" />
+    <item
+        android:id="@+id/gachchan"
+        android:icon="@drawable/gachchan"
+        android:title="" />
+    </menu>
