@@ -83,8 +83,9 @@ public class MainActivity extends AppCompatActivity {
         if (checkInternetConnection())
         {
 
-            String webUrl="http://192.168.0.101:58938/api/account?username="+txtusername.getText().toString()+"&password="+txtpassword.getText().toString()+"";
-            //String webUrl="http://192.168.0.101:58938/api/account";
+           // String webUrl="http://192.168.1.100:58938/api/account?username="+txtusername.getText().toString()+"&password="+txtpassword.getText().toString()+"";
+            //String webUrl="http://192.168.43.48:58938/api/account?username="+txtusername.getText().toString()+"&password="+txtpassword.getText().toString()+"";
+            String webUrl="http://192.168.0.101:58938/api/account";
 
             DownloadJsonTask task = new DownloadJsonTask(this.tvtest);
 
