@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">noteapp</string>
+    <string name="title_activity_notedetail">Map</string>
 </resources>

@@ -2,6 +2,8 @@ package com.example.noteapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -29,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
     EditText txtusername;
     EditText txtpassword;
     Button btnlogin;
-    TextView tvforgot,tvtest;
+    TextView tvforgot,tvregister;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +44,14 @@ public class MainActivity extends AppCompatActivity {
                 load_text();
             }
         });
+        tvregister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent it= new Intent(MainActivity.this,Register.class);
+                startActivity(it);
+            }
+        });
+
 
     }
     //khoi tao
@@ -49,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         txtpassword=(EditText) findViewById(R.id.edtpassword);
         btnlogin=(Button) findViewById(R.id.btnlogin);
         tvforgot=(TextView) findViewById(R.id.tvforgot);
-        tvtest=(TextView) findViewById(R.id.tvtest);
+        tvregister=(TextView) findViewById(R.id.tvregister);
     }
     //check internet
     private boolean checkInternetConnection() {
@@ -83,11 +94,11 @@ public class MainActivity extends AppCompatActivity {
         if (checkInternetConnection())
         {
 
-           // String webUrl="http://192.168.1.100:58938/api/account?username="+txtusername.getText().toString()+"&password="+txtpassword.getText().toString()+"";
-            //String webUrl="http://192.168.43.48:58938/api/account?username="+txtusername.getText().toString()+"&password="+txtpassword.getText().toString()+"";
-            String webUrl="http://192.168.0.101:58938/api/account";
+           //String webUrl="http://192.168.1.100:58938/api/account?username="+txtusername.getText().toString()+"&password="+txtpassword.getText().toString()+"";
+            String webUrl="http://192.168.1.101:58938/api/account?username="+txtusername.getText().toString()+"&password="+txtpassword.getText().toString()+"";
+           // String webUrl="http://192.168.0.101:58938/api/account";
 
-            DownloadJsonTask task = new DownloadJsonTask(this.tvtest);
+            DownloadJsonTask task = new DownloadJsonTask();
 
             task.execute(webUrl);
         }
@@ -96,10 +107,9 @@ public class MainActivity extends AppCompatActivity {
     public class DownloadJsonTask
             // AsyncTask<Params, Progress, Result>
             extends AsyncTask<String, Void, String> {
+        private ProgressDialog pDialog;
+        public DownloadJsonTask()  {
 
-        public  TextView tvtest;
-        public DownloadJsonTask(TextView context)  {
-            this.tvtest=context;
         }
 
         @Override
@@ -140,6 +150,16 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(MainActivity.this);
+            pDialog.setMessage("Waitting");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+        }
+
         // When the task is completed, this method will be called
         // Download complete. Lets update UI
         @Override
@@ -150,17 +170,19 @@ public class MainActivity extends AppCompatActivity {
                     String result1=j.getString("result");
                     String id=j.getString("id");
                     Log.e("id", id );
-                    this.tvtest.setText(result1);
                     if (result1.equals("ok")){
                         Intent it=new Intent(MainActivity.this,TrangChu.class);
                         it.putExtra("userid",id);
                         startActivity(it);
+                       // load.dissloadding();
+                        if(pDialog.isShowing()){
+                            pDialog.dismiss();
+                        }
                     }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-
             }
         }
     }

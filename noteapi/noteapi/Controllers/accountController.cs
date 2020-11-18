@@ -1,4 +1,5 @@
-﻿using noteapi.Models;
+﻿using Common;
+using noteapi.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -48,7 +49,7 @@ namespace noteapi.Controllers
                 }
             }
         }
-        public IHttpActionResult Postaccount(account user)
+       /* public IHttpActionResult Postaccount(account user)
         {
             if (user.username == "" || user.email == "" || user.password == "" )
             {
@@ -68,6 +69,50 @@ namespace noteapi.Controllers
                     db.SaveChanges();
                     return Ok(new { result = "err" });
                 }
+            }
+        }*/
+        [HttpPost]
+        public IHttpActionResult Postaccount([FromBody]account user)
+        {
+            List<account> l = db.accounts.Where(x => x.username == user.username).ToList();
+            if (l.Count > 0)
+            {
+                return Ok(new { result = "err" });
+            }
+            else
+            {
+                
+                Random r = new Random();
+                int codres = r.Next(1000, 9999);
+                user.status = false;
+                user.code = codres;
+                db.accounts.Add(user);
+                db.SaveChanges();
+                new Mailhelper().SendMail(user.email, "ma active", codres.ToString());
+                return Ok(new { result = "success",id=""+user.id+"" });
+            }
+        }
+
+        [HttpGet]
+        public IHttpActionResult Getactive(int id,int code)
+        {
+            account user = db.accounts.Where(x => x.id == id).First();
+            if (user != null)
+            {
+                if (user.code == code)
+                {
+                    user.status = true;
+                    db.SaveChanges();
+                    return Ok(new { result = "success" });
+                }
+                else
+                {
+                    return Ok(new { result = "err" });
+                }
+            }
+            else
+            {
+                return Ok(new { result = "err" });
             }
         }
     }

@@ -5,7 +5,6 @@ namespace noteapi.Models
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
-    using System.Data.Entity;
 
     [Table("account")]
     public partial class account
@@ -26,6 +25,10 @@ namespace noteapi.Models
 
         [StringLength(50)]
         public string email { get; set; }
+
+        public bool? status { get; set; }
+
+        public int? code { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<note> notes { get; set; }

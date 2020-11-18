@@ -8,7 +8,7 @@ namespace noteapi.Models
     public partial class dbcontext : DbContext
     {
         public dbcontext()
-            : base("name=dbcontext1")
+            : base("name=dbcontext")
         {
             this.Configuration.ProxyCreationEnabled = false;
         }

@@ -66,3 +66,6 @@ E:\C#\noteapi\noteapi\obj\Debug\noteapi.csproj.CoreCompileInputs.cache
 E:\C#\noteapi\noteapi\obj\Debug\noteapi.csproj.CopyComplete
 E:\C#\noteapi\noteapi\obj\Debug\noteapi.dll
 E:\C#\noteapi\noteapi\obj\Debug\noteapi.pdb
+E:\C#\noteapi\noteapi\bin\MultipartDataMediaFormatter.dll
+E:\C#\noteapi\noteapi\bin\Common.dll
+E:\C#\noteapi\noteapi\bin\Common.pdb

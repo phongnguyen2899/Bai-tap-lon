@@ -12,6 +12,7 @@ namespace noteapi
             // Web API configuration and services
 
             // Web API routes
+            config.Formatters.XmlFormatter.SupportedMediaTypes.Add(new System.Net.Http.Headers.MediaTypeHeaderValue("multipart/form-data"));
             config.MapHttpAttributeRoutes();
             config.Formatters.Remove(config.Formatters.XmlFormatter);
             config.Routes.MapHttpRoute(
