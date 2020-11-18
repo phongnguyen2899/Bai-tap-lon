@@ -3,6 +3,15 @@ package com.example.noteapp;
 import java.util.Date;
 
 public class Note {
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    private String id;
     private int userid;
     private String title;
     private String content;
@@ -16,7 +25,8 @@ public class Note {
         this.gps = gps;
         this.createdate = createdate;
     }
-    public Note(String title,String content,String createdate){
+    public Note(String id,String title,String content,String createdate){
+        this.id=id;
         this.title=title;
         this.content=content;
         this.createdate=createdate;

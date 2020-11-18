@@ -9,9 +9,12 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,6 +40,16 @@ public class Listnote extends AppCompatActivity {
         noteAdapter =new NoteAdapter(this,arr);
         lisview.setAdapter(noteAdapter);
         checkpermission();
+        lisview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Note i=arr.get(position);
+                Toast.makeText(Listnote.this,""+i.getId()+"",Toast.LENGTH_SHORT).show();
+                Intent it=new Intent(Listnote.this,Notedetail.class);
+                it.putExtra("noteid",i.getId());
+                startActivity(it);
+            }
+        });
 
     }
 
@@ -72,8 +85,8 @@ public class Listnote extends AppCompatActivity {
 
     public void callgetcountry(){
         DownloadJsonTask task= new DownloadJsonTask(this.arr);
-        task.execute("http://192.168.1.100:58938/api/note?id="+TrangChu.iduser+"");
-        //task.execute("http://192.168.43.48:58938/api/note?id="+TrangChu.iduser+"");
+        //task.execute("http://192.168.1.100:58938/api/note?id="+TrangChu.iduser+"");
+        task.execute("http://192.168.1.101:58938/api/note?id="+TrangChu.iduser+"");
     }
 
     public class DownloadJsonTask
@@ -136,10 +149,11 @@ public class Listnote extends AppCompatActivity {
                     //lap va them vao arrayadapter
                     for(int i=0;i<arr.length();i++){
                         JSONObject obj= arr.getJSONObject(i);
+                        String id=obj.getString("id");
                         String title=obj.getString("title");
                         String content=obj.getString("content");
                         String createdate=obj.getString("createdate");
-                        Note item=new Note(title,content,createdate);
+                        Note item=new Note(id,title,content,createdate);
                         listnote.add(item);
                     }
                     noteAdapter.notifyDataSetChanged();

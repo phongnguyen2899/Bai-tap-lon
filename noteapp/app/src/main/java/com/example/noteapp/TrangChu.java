@@ -38,7 +38,6 @@ public class TrangChu extends AppCompatActivity implements GestureDetector.OnGes
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trang_chu);
-        TextView tv=(TextView) findViewById(R.id.tvtest);
         Intent it=getIntent();
         String value=it.getStringExtra("userid");
         Toast.makeText(this,""+value+"",Toast.LENGTH_LONG).show();

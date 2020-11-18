@@ -187,9 +187,7 @@ public class Textnote extends AppCompatActivity {
         else {
 
         }
-
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     void postTextnote() {
@@ -202,8 +200,8 @@ public class Textnote extends AppCompatActivity {
 
         postData.put("createdate",""+ LocalDateTime.now() +"");
         HttpPostAsyncTask task = new HttpPostAsyncTask(postData);
-        task.execute("http://192.168.1.100:58938/api/note");
-       // task.execute("http://192.168.43.48:58938/api/note");
+        //task.execute("http://192.168.1.100:58938/api/note");
+        task.execute("http://192.168.1.101:58938/api/note");
     }
     private String convertInputStreamToString(InputStream inputStream) {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
@@ -236,10 +234,8 @@ public class Textnote extends AppCompatActivity {
                 URL url = new URL(params[0]);
                 // Create the urlConnection
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
                 urlConnection.setDoInput(true);
                 urlConnection.setDoOutput(true);
-
                 urlConnection.setRequestProperty("Content-Type", "application/json");
                 urlConnection.setRequestMethod("POST");
                 // OPTIONAL - Sets an authorization header
