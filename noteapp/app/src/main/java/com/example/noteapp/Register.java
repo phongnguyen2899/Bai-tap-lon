@@ -112,7 +112,7 @@ public class Register extends AppCompatActivity {
 
         HttpPostAsyncTask task = new HttpPostAsyncTask(postData);
         //task.execute("http://192.168.1.100:58938/api/note");
-        task.execute("http://192.168.1.101:58938/api/account");
+        task.execute(""+Const.URL+"/api/account");
     }
     private String convertInputStreamToString(InputStream inputStream) {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));

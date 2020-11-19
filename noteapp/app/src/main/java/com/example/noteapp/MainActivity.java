@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     EditText txtusername;
     EditText txtpassword;
     Button btnlogin;
-    TextView tvforgot,tvregister;
+    TextView tvchangepwd,tvregister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,14 @@ public class MainActivity extends AppCompatActivity {
         btnlogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                load_text();
+
+                SharedPreferences myShared = getSharedPreferences("SPDemo",MODE_PRIVATE);
+                SharedPreferences.Editor myEditor = myShared.edit();
+
+                myEditor.putString("username", txtusername.getText().toString());
+                myEditor.putString("password", txtpassword.getText().toString());
+                myEditor.apply();
+                load_text( ""+Const.URL+"/api/account?username="+txtusername.getText().toString()+"&password="+txtpassword.getText().toString()+"");
             }
         });
         tvregister.setOnClickListener(new View.OnClickListener() {
@@ -51,6 +59,21 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(it);
             }
         });
+        tvchangepwd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent it=new Intent(MainActivity.this,ChangePassword.class);
+                startActivity(it);
+            }
+        });
+        SharedPreferences myShared = getSharedPreferences("SPDemo",MODE_PRIVATE);
+        String username = myShared.getString("username","");
+        String password = myShared.getString("password","");
+        if (username!=""&&password!="")
+        {
+            load_text(""+Const.URL+"/api/account?username="+username+"&password="+password+"");
+        }
+
 
 
     }
@@ -59,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         txtusername=(EditText) findViewById(R.id.edtusername);
         txtpassword=(EditText) findViewById(R.id.edtpassword);
         btnlogin=(Button) findViewById(R.id.btnlogin);
-        tvforgot=(TextView) findViewById(R.id.tvforgot);
+        tvchangepwd=(TextView) findViewById(R.id.tvchangepwd);
         tvregister=(TextView) findViewById(R.id.tvregister);
     }
     //check internet
@@ -89,13 +112,13 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    void load_text()
+    void load_text(String webUrl)
     {
         if (checkInternetConnection())
         {
 
            //String webUrl="http://192.168.1.100:58938/api/account?username="+txtusername.getText().toString()+"&password="+txtpassword.getText().toString()+"";
-            String webUrl="http://192.168.1.101:58938/api/account?username="+txtusername.getText().toString()+"&password="+txtpassword.getText().toString()+"";
+           // String webUrl="http://192.168.1.101:58938/api/account?username="+txtusername.getText().toString()+"&password="+txtpassword.getText().toString()+"";
            // String webUrl="http://192.168.0.101:58938/api/account";
 
             DownloadJsonTask task = new DownloadJsonTask();

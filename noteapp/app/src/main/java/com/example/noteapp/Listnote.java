@@ -45,9 +45,18 @@ public class Listnote extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Note i=arr.get(position);
                 Toast.makeText(Listnote.this,""+i.getId()+"",Toast.LENGTH_SHORT).show();
-                Intent it=new Intent(Listnote.this,Notedetail.class);
-                it.putExtra("noteid",i.getId());
-                startActivity(it);
+                Toast.makeText(Listnote.this,""+i.getImg()+"",Toast.LENGTH_SHORT).show();
+                String im=i.getImg();
+                if(i.getImg()==null){
+                    Intent it= new Intent(Listnote.this,NoteImgdetail.class);
+                    startActivity(it);
+                }
+                else {
+                    Intent it=new Intent(Listnote.this,NoteImgdetail.class);
+                    it.putExtra("noteid",i.getId());
+                    startActivity(it);
+                }
+
             }
         });
 
@@ -86,7 +95,7 @@ public class Listnote extends AppCompatActivity {
     public void callgetcountry(){
         DownloadJsonTask task= new DownloadJsonTask(this.arr);
         //task.execute("http://192.168.1.100:58938/api/note?id="+TrangChu.iduser+"");
-        task.execute("http://192.168.1.101:58938/api/note?id="+TrangChu.iduser+"");
+        task.execute(""+Const.URL+"/api/note?id="+TrangChu.iduser+"");
     }
 
     public class DownloadJsonTask
@@ -153,7 +162,8 @@ public class Listnote extends AppCompatActivity {
                         String title=obj.getString("title");
                         String content=obj.getString("content");
                         String createdate=obj.getString("createdate");
-                        Note item=new Note(id,title,content,createdate);
+                        String im=obj.getString("img");
+                        Note item=new Note(id,title,content,createdate,im);
                         listnote.add(item);
                     }
                     noteAdapter.notifyDataSetChanged();

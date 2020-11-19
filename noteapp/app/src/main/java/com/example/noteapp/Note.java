@@ -18,18 +18,30 @@ public class Note {
     private String gps;
     private String createdate;
 
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+    private String img;
+
     public Note(int userid, String title, String content, String gps, String createdate) {
         this.userid = userid;
         this.title = title;
         this.content = content;
         this.gps = gps;
         this.createdate = createdate;
+
     }
-    public Note(String id,String title,String content,String createdate){
+    public Note(String id,String title,String content,String createdate,String img){
         this.id=id;
         this.title=title;
         this.content=content;
         this.createdate=createdate;
+        this.img=img;
     }
 
     public int getUserid() {
