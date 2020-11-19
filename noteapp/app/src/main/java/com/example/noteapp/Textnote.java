@@ -63,7 +63,6 @@ public class Textnote extends AppCompatActivity {
          navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-
     }
 
     public void innit(){
@@ -197,11 +196,11 @@ public class Textnote extends AppCompatActivity {
         postData.put("content", ""+txtcontent.getText().toString()+"");
 
             postData.put("gps", ""+Mylocationchage.GPS+"");
-
         postData.put("createdate",""+ LocalDateTime.now() +"");
         HttpPostAsyncTask task = new HttpPostAsyncTask(postData);
         //task.execute("http://192.168.1.100:58938/api/note");
-        task.execute("http://192.168.1.101:58938/api/note");
+        //task.execute("http://192.168.1.101:58938/api/note");
+        task.execute(""+Const.URL+"/uploadtext");
     }
     private String convertInputStreamToString(InputStream inputStream) {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));

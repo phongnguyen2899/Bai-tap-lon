@@ -25,27 +25,31 @@ namespace noteapi.Controllers
         public IEnumerable Gettextnote(int id)
         {
             List<note> l = db.notes.Where(x => x.userid == id).ToList();
-                return l;
+            return l;
         }
 
-        /*[HttpPost]
+        
+        [HttpPost]
+        [Route("uploadtext")]
         public IHttpActionResult Posttextnote([FromBody]note textnote)
         {
+            textnote.img = null;
             db.notes.Add(textnote);
             db.SaveChanges();
             return Ok(new { result = "success" });
 
-        }*/
+        }
 
             
         [HttpPost]
+        [Route("uploadimg")]
         public IHttpActionResult Posttextnote1()
         {
             try
             {
                 var res = new HttpResponseMessage(HttpStatusCode.OK);
                 var req = HttpContext.Current.Request;
-                string filename="";
+                string filename = "";
                 if (req.Files.Count > 0)
                 {
                     var files = new List<string>();
@@ -56,12 +60,15 @@ namespace noteapi.Controllers
                         postedfile.SaveAs(filepath);
                         files.Add(filepath);
                         filename += postedfile.FileName;
+                        filename += ",";
                     }
                     note note = new note();
                     note.title = req.Form.GetValues("title").First();
                     note.img = filename;
-                    note.userid =Int32.Parse(req.Form.GetValues("id").First()) ;
-                    note.title = req.Form.GetValues("gps").First();
+                    note.userid = Int32.Parse(req.Form.GetValues("id").First());
+                    note.gps = req.Form.GetValues("gps").First();
+                    DateTime now = DateTime.Now;
+                    note.createdate = now;
                     db.notes.Add(note);
                     db.SaveChanges();
                     return Ok(new { result = "success" });

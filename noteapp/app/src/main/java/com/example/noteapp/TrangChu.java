@@ -104,26 +104,29 @@ public class TrangChu extends AppCompatActivity implements GestureDetector.OnGes
 
                 if(Math.abs(valueX)>MIN_DISTANCE){
                     if(x2>x1){
+
+                        Toast.makeText(this,"left",Toast.LENGTH_LONG).show();
+                    }
+                    else {
+
                         Toast.makeText(this,"Right",Toast.LENGTH_LONG).show();
                         Intent it= new Intent(TrangChu.this,Listnote.class);
                         startActivity(it);
-                    }
-                    else {
-                        Toast.makeText(this,"left",Toast.LENGTH_LONG).show();
-
                     }
                 }
                 else if(Math.abs(valueY)>MIN_DISTANCE)
                 {
                     if(y2>y1){
-                        refreshLocation();
-                        Toast.makeText(this,"bottom",Toast.LENGTH_LONG).show();
-                        Intent it= new Intent(TrangChu.this,Textnote.class);
+                        Toast.makeText(this,"top",Toast.LENGTH_LONG).show();
+                        Intent it= new Intent(TrangChu.this,Imagenote.class);
                         startActivity(it);
 
                     }
                     else {
-                        Toast.makeText(this,"top",Toast.LENGTH_LONG).show();
+                        refreshLocation();
+                        Toast.makeText(this,"bottom",Toast.LENGTH_LONG).show();
+                        Intent it= new Intent(TrangChu.this,Textnote.class);
+                        startActivity(it);
                     }
                 }
         }

@@ -14,12 +14,7 @@ namespace noteapi.Controllers
     public class accountController : ApiController
     {
         dbcontext db = new dbcontext();
-        [HttpGet]
-        public IEnumerable Getall()
-        {
-            List<account> l = db.accounts.ToList();
-            return l;
-        }
+      
         [HttpGet]
         public IHttpActionResult GetResult(string username,string password)
         {
@@ -115,5 +110,27 @@ namespace noteapi.Controllers
                 return Ok(new { result = "err" });
             }
         }
+        [HttpGet]
+        [Route("{username}/{password}/{newpassword}")]
+        public IHttpActionResult GetChangepwd(string username, string password, string newpassword) {
+            account item = db.accounts.Where(x => x.username == username).ToList().FirstOrDefault();
+            if (item==null)
+            {
+                return Ok(new { result = "notfound" });
+            }
+            else
+            {
+                if (item.password != password) {
+                    return Ok(new { result = "errpwd" });
+                }
+                else
+                {
+                    item.password = newpassword;
+                    db.SaveChanges();
+                    return Ok(new { result = "success" });
+                }
+            }
+        }
+
     }
 }
