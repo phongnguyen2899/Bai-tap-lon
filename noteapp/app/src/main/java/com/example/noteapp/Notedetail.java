@@ -1,6 +1,7 @@
 package com.example.noteapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -12,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -35,11 +37,17 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Notedetail extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -47,8 +55,8 @@ public class Notedetail extends AppCompatActivity implements OnMapReadyCallback 
     private EditText txttitle,txtcontent;
     public String[] gps;
     public String id;
-    public float log;
-    public float lat;
+    public float log=0;
+    public float lat=0;
 
 
     @Override
@@ -57,9 +65,7 @@ public class Notedetail extends AppCompatActivity implements OnMapReadyCallback 
         setContentView(R.layout.activity_notedetail);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+
         Intent it=getIntent();
          id=it.getStringExtra("noteid");
         innit();
@@ -76,6 +82,19 @@ public class Notedetail extends AppCompatActivity implements OnMapReadyCallback 
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.luudetail:
+                checkInternetConnection();
+                postTextnote();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -108,22 +127,33 @@ public class Notedetail extends AppCompatActivity implements OnMapReadyCallback 
 
         // Thay đổi góc camera
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(20.985409, 105.838738))       // Zoom vào Lat, Long
+                .target(new LatLng(lat, log))       // Zoom vào Lat, Long
                 .zoom(18)
                 .bearing(0)
                 .tilt(40)
                 .build();
 
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
         //Thêm MarketOption cho Map:
-        MarkerOptions myMarker =new MarkerOptions();
-        myMarker.title("Chỗ bạn tạo ghi chú");
-        myMarker.snippet("Là ");
-        myMarker.position(new LatLng(lat, log));
+        if(lat!=0){
+            MarkerOptions myMarker =new MarkerOptions();
+            myMarker.title("Chỗ bạn tạo ghi chú");
+            myMarker.snippet("Là ");
+            myMarker.position(new LatLng(lat, log));
 
-        Marker currentMarker= mMap.addMarker(myMarker);
-        currentMarker.showInfoWindow();
+            Marker currentMarker= mMap.addMarker(myMarker);
+            currentMarker.showInfoWindow();
+        }
+        else {
+            MarkerOptions myMarker =new MarkerOptions();
+            myMarker.title("Chỗ bạn tạo ghi chú");
+            myMarker.snippet("Là ");
+            myMarker.position(new LatLng(20.985310, 105.838620));
+
+            Marker currentMarker= mMap.addMarker(myMarker);
+            currentMarker.showInfoWindow();
+        }
+
     }
     private boolean checkInternetConnection() {
         // Get Connectivity Manager
@@ -225,10 +255,18 @@ public class Notedetail extends AppCompatActivity implements OnMapReadyCallback 
                     String jgps = j.getString("gps");
                     this.title.setText(jtitle);
                     this.content.setText(jcontent);
-                    if (!jgps.equals("")) {
+                    if (!jgps.equals("null")) {
                         gps=jgps.split(",");
                         log=Float.parseFloat(gps[0]);
                         lat=Float.parseFloat(gps[1]);
+                        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                                .findFragmentById(R.id.map);
+                        mapFragment.getMapAsync(Notedetail.this);
+                    }
+                    else {
+                        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                                .findFragmentById(R.id.map);
+                        mapFragment.getMapAsync(Notedetail.this);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -238,5 +276,90 @@ public class Notedetail extends AppCompatActivity implements OnMapReadyCallback 
             }
         }
 
+    }
+
+    //luu lai
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    void postTextnote() {
+        Map<String,String> postData = new HashMap<>();
+        postData.put("id", ""+id+"");
+        postData.put("title", ""+txttitle.getText().toString()+"");
+        postData.put("content", ""+txtcontent.getText().toString()+"");
+
+       HttpPostAsyncTask task = new HttpPostAsyncTask(postData);
+        //task.execute("http://192.168.1.100:58938/api/note");
+        //task.execute("http://192.168.1.101:58938/api/note");
+        task.execute(""+Const.URL+"/updatenotetext");
+    }
+    private String convertInputStreamToString(InputStream inputStream) {
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        try {
+            while((line = bufferedReader.readLine()) != null) {
+                sb.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
+    }
+    public class HttpPostAsyncTask extends AsyncTask<String, Void, String> {
+        // This is the JSON body of the post
+        JSONObject postData;
+        // This is a constructor that allows you to pass in the JSON body
+        public HttpPostAsyncTask(Map<String, String> postData) {
+            if (postData != null) {
+                this.postData = new JSONObject(postData);
+            }
+        }
+
+        // This is a function that we are overriding from AsyncTask. It takes Strings as parameters because that is what we defined for the parameters of our async task
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                // This is getting the url from the string we passed in
+                URL url = new URL(params[0]);
+                // Create the urlConnection
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setDoInput(true);
+                urlConnection.setDoOutput(true);
+                urlConnection.setRequestProperty("Content-Type", "application/json");
+                urlConnection.setRequestMethod("POST");
+                // OPTIONAL - Sets an authorization header
+                urlConnection.setRequestProperty("Authorization", "someAuthString");
+                // Send the post body
+                if (this.postData != null) {
+                    OutputStreamWriter writer = new OutputStreamWriter(urlConnection.getOutputStream());
+                    writer.write(postData.toString());
+                    writer.flush();
+                }
+
+                int statusCode = urlConnection.getResponseCode();
+
+                if (statusCode ==  200) {
+
+                    InputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
+
+                    String response = convertInputStreamToString(inputStream);
+                    //Log.d("res", response);
+                    //JSONObject jsonObject = new JSONObject(response);
+                    //String res = jsonObject.getString("result_message");
+                    return  response;
+                    //Toast.makeText(DoiMkActivity.this, "result_message: " + res, Toast.LENGTH_SHORT).show();
+                } else {
+                    // Status code is not 200
+                    // Do something to handle the error
+                }
+
+            } catch (Exception e) {
+                Log.d("ERR: ", e.getLocalizedMessage());
+            }
+            return null;
+        }
+
+        protected void onPostExecute(String result) {
+
+        }
     }
 }
