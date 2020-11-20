@@ -3,6 +3,7 @@ package com.example.noteapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -47,8 +48,9 @@ public class Listnote extends AppCompatActivity {
                 Toast.makeText(Listnote.this,""+i.getId()+"",Toast.LENGTH_SHORT).show();
                 Toast.makeText(Listnote.this,""+i.getImg()+"",Toast.LENGTH_SHORT).show();
                 String im=i.getImg();
-                if(i.getImg()==null){
-                    Intent it= new Intent(Listnote.this,NoteImgdetail.class);
+                if(i.getImg()=="null"){
+                    Intent it= new Intent(Listnote.this,Notedetail.class);
+                    it.putExtra("noteid",i.getId());
                     startActivity(it);
                 }
                 else {
@@ -57,6 +59,18 @@ public class Listnote extends AppCompatActivity {
                     startActivity(it);
                 }
 
+            }
+        });
+
+        //giữ để xóa
+
+        lisview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Note i=arr.get(position);
+                arr.remove(i);
+                loadtext(i.getId());
+                return true;
             }
         });
 
@@ -95,7 +109,8 @@ public class Listnote extends AppCompatActivity {
     public void callgetcountry(){
         DownloadJsonTask task= new DownloadJsonTask(this.arr);
         //task.execute("http://192.168.1.100:58938/api/note?id="+TrangChu.iduser+"");
-        task.execute(""+Const.URL+"/api/note?id="+TrangChu.iduser+"");
+        //task.execute(""+Const.URL+"/api/note?id="+TrangChu.iduser+"");
+        task.execute(""+Const.URL+"/getnotebyuserid/"+TrangChu.iduser+"");
     }
 
     public class DownloadJsonTask
@@ -177,5 +192,94 @@ public class Listnote extends AppCompatActivity {
             }
         }
 
+    }
+
+    // xoa note
+    public void loadtext(String id){
+
+            //String webUrl="http://192.168.1.100:58938/api/account?username="+txtusername.getText().toString()+"&password="+txtpassword.getText().toString()+"";
+            // String webUrl="http://192.168.1.101:58938/api/account?username="+txtusername.getText().toString()+"&password="+txtpassword.getText().toString()+"";
+            // String webUrl="http://192.168.0.101:58938/api/account";
+
+            DeleteAsynctask task = new DeleteAsynctask();
+
+            task.execute(""+Const.URL+"/delete/"+id+"");
+    }
+    public class DeleteAsynctask
+            // AsyncTask<Params, Progress, Result>
+            extends AsyncTask<String, Void, String> {
+        private ProgressDialog pDialog;
+        public DeleteAsynctask()  {
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String textUrl = params[0];
+
+            InputStream in = null;
+            BufferedReader br= null;
+            try {
+                URL url = new URL(textUrl);
+                HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
+
+                httpConn.setAllowUserInteraction(false);
+                httpConn.setInstanceFollowRedirects(true);
+                httpConn.setRequestMethod("GET");
+                httpConn.connect();
+                int resCode = httpConn.getResponseCode();
+
+                if (resCode == HttpURLConnection.HTTP_OK) {
+                    in = httpConn.getInputStream();
+                    br= new BufferedReader(new InputStreamReader(in));
+
+                    StringBuilder sb= new StringBuilder();
+                    String s= null;
+                    while((s= br.readLine())!= null) {
+                        sb.append(s);
+                        sb.append("\n");
+                    }
+                    return sb.toString();
+                } else {
+                    return null;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                // Close
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(Listnote.this);
+            pDialog.setMessage("Waitting");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+        }
+
+        // When the task is completed, this method will be called
+        // Download complete. Lets update UI
+        @Override
+        protected void onPostExecute(String result) {
+            if(result!=null){
+                try {
+                    JSONObject j=new JSONObject(result);
+                    String result1=j.getString("result");
+                    if (result1.equals("success")){
+                        noteAdapter.notifyDataSetChanged();
+                        if(pDialog.isShowing()){
+                            pDialog.dismiss();
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

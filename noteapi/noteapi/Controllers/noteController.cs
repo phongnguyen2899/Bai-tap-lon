@@ -22,13 +22,14 @@ namespace noteapi.Controllers
         }
 
         [HttpGet]
+        [Route("getnotebyuserid/{id}")]
         public IEnumerable Gettextnote(int id)
         {
             List<note> l = db.notes.Where(x => x.userid == id).ToList();
             return l;
         }
 
-        
+
         [HttpPost]
         [Route("uploadtext")]
         public IHttpActionResult Posttextnote([FromBody]note textnote)
@@ -40,7 +41,7 @@ namespace noteapi.Controllers
 
         }
 
-            
+
         [HttpPost]
         [Route("uploadimg")]
         public IHttpActionResult Posttextnote1()
@@ -75,7 +76,7 @@ namespace noteapi.Controllers
                 }
                 else
                 {
-                    
+
                     return Ok(new { result = "err" });
                 }
 
@@ -88,10 +89,23 @@ namespace noteapi.Controllers
         }
 
 
-        [HttpGet] 
+        [HttpGet]
+        [Route("getnotebyid/{idnote}")]
         public note Gettextnotebyid(int idnote)
         {
             return db.notes.Where(x => x.id == idnote).First();
+        }
+
+
+
+        [HttpGet]
+        [Route("delete/{id}")]
+        public IHttpActionResult Deletenote(int id)
+        {
+            note item = db.notes.Where(x => x.id == id).ToList().FirstOrDefault();
+            db.notes.Remove(item);
+            db.SaveChanges();
+            return Ok(new { result = "success" });
         }
 
     }

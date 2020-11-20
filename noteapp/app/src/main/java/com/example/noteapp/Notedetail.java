@@ -156,7 +156,7 @@ public class Notedetail extends AppCompatActivity implements OnMapReadyCallback 
         {
 
             //String webUrl="http://192.168.1.100:58938/api/note?idnote="+id+"";
-            String webUrl=""+Const.URL+"/api/note?idnote="+id+"";
+            String webUrl=""+Const.URL+"/getnotebyid/"+id+"";
 
             DownloadJsonTask task =new DownloadJsonTask(this.txttitle,this.txtcontent);
 
