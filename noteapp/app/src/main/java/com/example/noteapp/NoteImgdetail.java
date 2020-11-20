@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -70,6 +71,12 @@ public class NoteImgdetail extends AppCompatActivity {
         }*/
 
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menutoolbarcreatetext,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
     public void loadanh(String [] listimg){
         for (int i=0;i<listimg.length;i++){
             ImageView item = new ImageView(this);
@@ -117,7 +124,7 @@ public class NoteImgdetail extends AppCompatActivity {
         {
 
             //String webUrl="http://192.168.1.100:58938/api/note?idnote="+id+"";
-            String webUrl=""+Const.URL+"/api/note?idnote="+id+"";
+            String webUrl=""+Const.URL+"/getnotebyid/"+id+"";
 
             DownloadJsonTask task =new DownloadJsonTask(this.tvtets,imgnames);
 
