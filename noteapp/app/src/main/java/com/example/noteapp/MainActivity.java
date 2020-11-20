@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     EditText txtusername;
     EditText txtpassword;
     Button btnlogin;
-    TextView tvchangepwd,tvregister;
+    TextView tvchangepwd,tvregister,tvlogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         btnlogin=(Button) findViewById(R.id.btnlogin);
         tvchangepwd=(TextView) findViewById(R.id.tvchangepwd);
         tvregister=(TextView) findViewById(R.id.tvregister);
+        tvlogin=(TextView) findViewById(R.id.tvlogin);
     }
     //check internet
     private boolean checkInternetConnection() {
@@ -191,13 +192,20 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     JSONObject j=new JSONObject(result);
                     String result1=j.getString("result");
-                    String id=j.getString("id");
-                    Log.e("id", id );
                     if (result1.equals("ok")){
+                        String id=j.getString("id");
+                        Log.e("id", id );
                         Intent it=new Intent(MainActivity.this,TrangChu.class);
                         it.putExtra("userid",id);
                         startActivity(it);
+                        tvlogin.setText("Đăng nhập thành công");
                        // load.dissloadding();
+                        if(pDialog.isShowing()){
+                            pDialog.dismiss();
+                        }
+                    }
+                    else if(result1.equals("err")) {
+                        tvlogin.setText("Đăng nhập không thành công");
                         if(pDialog.isShowing()){
                             pDialog.dismiss();
                         }
